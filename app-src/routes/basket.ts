@@ -16,14 +16,32 @@ export function retrieveBasket () {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id
-      const basket = await BasketModel.findOne({ where: { id }, include: [{ model: ProductModel, paranoid: false, as: 'Products' }] })
+      const user = security.authenticatedUsers.from(req)
       /* jshint eqeqeq:false */
       challengeUtils.solveIf(challenges.basketAccessChallenge, () => {
-        const user = security.authenticatedUsers.from(req)
         const isValidId = id && id !== 'undefined' && id !== 'null' && id !== 'NaN'
         return user && isValidId && user.bid && user?.bid != parseInt(id, 10) // eslint-disable-line eqeqeq
       })
-      if (((basket?.Products) != null) && basket.Products.length > 0) {
+
+      // Control ASVS 5.0 · 8.2.2: el carrito debe pertenecer al usuario autenticado.
+      if (user == null) {
+        res.status(401).json({ status: 'error', message: 'Unauthorized' })
+        return
+      }
+      if (!Number.isInteger(Number(id))) {
+        res.status(404).json({ status: 'error', message: 'Basket not found' })
+        return
+      }
+
+      const basket = await BasketModel.findOne({ where: { id, UserId: user.data.id }, include: [{ model: ProductModel, paranoid: false, as: 'Products' }] })
+
+      // Ajeno e inexistente responden igual: no se filtra la existencia del recurso.
+      if (basket == null) {
+        res.status(404).json({ status: 'error', message: 'Basket not found' })
+        return
+      }
+
+      if (((basket.Products) != null) && basket.Products.length > 0) {
         for (let i = 0; i < basket.Products.length; i++) {
           basket.Products[i].name = req.__(basket.Products[i].name)
         }
