@@ -134,8 +134,6 @@ grep -n "url.includes" app-src/lib/insecurity.ts
 
 ## 4. ¿Hicimos un buen trabajo?
 
-_(Se completa al cerrar las secciones 2 y 3 del laboratorio: Semgrep y ZAP.)_
-
 1. **¿Cuántos requisitos cumplen de los 25?** 0 de 25. Juice Shop es vulnerable por diseño; el valor del ejercicio está en la evidencia, no en el resultado. Solo se salvan controles puntuales, como el enmascarado de tarjetas en `payment.ts:32` o el saneamiento de comentarios en `feedback.ts:44`, pero no alcanzan para declarar una fila completa.
 2. **¿Qué encontró la revisión humana que ninguna herramienta encontró?** El **BOLA del carrito** (`basket.ts:19`), el **saldo incrementable desde el cliente** (`wallet.ts:27`), el **MD5 para contraseñas** (`insecurity.ts:41`) y la **autorización por función ausente**: con un token `customer`, `GET /rest/user/authentication-details` devuelve **200** con los correos de todos los usuarios. Semgrep no tiene una regla que sepa a quién pertenece un objeto, y ZAP sin sesión nunca llega a esas rutas. También fue humana la lectura de que `Access-Control-Allow-Origin: *` era inofensivo en este contexto: ZAP lo marcó Medium.
 3. **¿Qué falso positivo les hizo perder más tiempo?** El de **Cross-Domain Misconfiguration** de ZAP. La alerta sugiere fuga de datos entre dominios, pero sin `Access-Control-Allow-Credentials: true` el navegador no envía cookies y los recursos marcados son públicos (`polyfills.js`, `robots.txt`, `sitemap.xml`). Tocar ese header no habría cambiado el riesgo real; el esfuerzo se fue en confirmar que no había una segunda cabecera.
