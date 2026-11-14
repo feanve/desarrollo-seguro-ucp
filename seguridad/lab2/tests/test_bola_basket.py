@@ -24,14 +24,18 @@ TIMEOUT = 10
 
 
 def register(email: str) -> None:
-    """Crea el usuario. Un 409 significa que ya existía de una corrida anterior."""
+    """Crea el usuario. Si ya existe de una corrida anterior, continúa."""
     r = requests.post(
         f"{BASE_URL}/api/Users",
         json={"email": email, "password": PASSWORD, "passwordRepeat": PASSWORD},
         timeout=TIMEOUT,
     )
-    if r.status_code not in (201, 409):
-        raise RuntimeError(f"No se pudo registrar {email}: HTTP {r.status_code} {r.text[:300]}")
+    if r.status_code == 201:
+        return
+    # Juice Shop responde 400 con "email must be unique" en la segunda corrida.
+    if r.status_code in (400, 409) and "unique" in r.text.lower():
+        return
+    raise RuntimeError(f"No se pudo registrar {email}: HTTP {r.status_code} {r.text[:300]}")
 
 
 def login(email: str) -> tuple[str, int]:
