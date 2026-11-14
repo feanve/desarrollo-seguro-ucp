@@ -1,5 +1,6 @@
 # fix(authz): exigir dueño del carrito en `GET /rest/basket/{id}`
 
+**Pull request:** https://github.com/feanve/desarrollo-seguro-ucp/pull/1
 **Rama:** `lab2/verificacion-asvs` → `main` (fork `feanve/desarrollo-seguro-ucp`)
 **Laboratorio:** 2 · Sección 4: corregir una falla con su prueba
 
