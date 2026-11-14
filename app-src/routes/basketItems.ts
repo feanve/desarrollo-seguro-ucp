@@ -85,6 +85,13 @@ export function quantityCheckBeforeBasketItemUpdate () {
 }
 
 async function quantityCheck (req: Request, res: Response, next: NextFunction, id: number, quantity: number) {
+  const quantityNumber = Number(quantity)
+  // Control ASVS 5.0 · 2.3.2: la cantidad debe ser un entero positivo y acotado.
+  if (!Number.isInteger(quantityNumber) || quantityNumber <= 0 || quantityNumber > 1000) {
+    res.status(400).json({ error: 'Invalid quantity' })
+    return
+  }
+
   const product = await QuantityModel.findOne({ where: { ProductId: id } })
   if (product == null) {
     throw new Error('No such product found!')

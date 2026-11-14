@@ -9,6 +9,13 @@ import * as security from '../lib/insecurity'
 
 async function retrieveUserList (req: Request, res: Response, next: NextFunction) {
   try {
+    // Control ASVS 5.0 · 8.3.1: solo un administrador puede listar a todos los usuarios.
+    const requester = security.authenticatedUsers.from(req)
+    if (requester?.data?.role !== 'admin') {
+      res.status(403).json({ status: 'error', message: 'Forbidden' })
+      return
+    }
+
     const users = await UserModel.findAll()
 
     res.json({

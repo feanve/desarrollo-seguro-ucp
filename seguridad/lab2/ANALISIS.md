@@ -1,7 +1,7 @@
 # Análisis comparativo y criterio de cierre · Laboratorio 2
 
 **Aplicación:** OWASP Juice Shop (`http://127.0.0.1:3000`)
-**Insumos:** `ASVS.md`, `TRIAGE.md`, `semgrep.sarif`, `zap.json`, `tests/test_bola_basket.py`
+**Insumos:** `ASVS.md`, `TRIAGE.md`, `semgrep.sarif`, `zap.json`, `CIERRES.md`, `tests/`
 **Pregunta que responde:** ¿qué valor tiene cada hallazgo, por qué, y cómo se demuestra que quedó cerrado?
 
 ---
@@ -91,13 +91,14 @@ lo encontró: **S** Semgrep, **Z** ZAP, **H** revisión humana.
 | H10 | Logs servidos por `logfileServer.ts:14` | S | 16.4.2 | — | 3 | 5 | **15** | Corregir: datos personales (Ley 1581) sin auth |
 | H11 | XSS almacenado en `/ftp/quarantine/` | S | 1.2.1 | — | 4 | 3 | **12** | Corregir: requiere subir un archivo |
 | H12 | Open redirect en `redirect.ts:18` | S + H | 3.7.2 | — | 3 | 4 | **12** | Corregir: phishing con el dominio real |
-| H13 | Cantidad negativa en `basketItems.ts:43` | H | 2.3.2 | T01 | 3 | 4 | **12** | Corregir: orden con total negativo |
+| H13 | Cantidad negativa en `basketItems.ts:43` | H | 2.3.2 | T01 | 3 | 4 | **12** | **Corregido** y con prueba |
 | H14 | Cookie sin `Secure`/`HttpOnly`/`SameSite` | H | 3.3.1, 3.3.2, 3.3.4 | — | 4 | 3 | **12** | Corregir: robo de sesión vía XSS |
 | H15 | JWT sin allowlist de algoritmos ni `aud` | H | 9.1.2, 9.2.3 | — | 4 | 3 | **12** | Corregir: acepta `alg` del encabezado |
 | H16 | Sin límite de intentos en el login | H | 6.3.1 | — | 3 | 4 | **12** | Corregir: fuerza bruta sin freno |
 | H17 | Sin CSP (`/`, `/ftp`, `/sitemap.xml`) | Z + H | 3.4.3 | — | 2 | 4 | **8** | Mitigar: defensa en profundidad, agrava H08 y H11 |
 | H18 | Sin registro de fallos de autenticación | H | 16.3.1 | — | 2 | 4 | **8** | Corregir en el ciclo: no hay trazabilidad |
 | H19 | `Access-Control-Allow-Origin: *` | Z | 3.4.2 | — | 1 | 1 | **1** | **Falso positivo**: sin `Allow-Credentials`, descartar |
+| H20 | Autorización por función en `/rest/user/authentication-details` | H | 8.3.1 | — | 4 | 4 | **16** | **Corregido** y con prueba |
 
 **Lectura del criterio.** El orden de prioridad no coincide con el orden en que las herramientas
 reportan: H01 aparece como `warning`, H05 no aparece en ninguna herramienta y H19 aparece como
@@ -141,6 +142,7 @@ dejado la SQLi para el final.
 | Open redirect | ✅ | — | ✅ | `redirect.ts:18` |
 | XSS almacenado | ✅ | — | — | `/ftp/quarantine/` |
 | BOLA / IDOR | — | — | ✅ | `basket.ts:19` |
+| Autorización por función | — | — | ✅ | `authenticatedUsers.ts:10` |
 | BOPLA (saldo, rol) | — | — | ✅ | `wallet.ts:27`, `user.ts:76` |
 | Hash de contraseñas | — | — | ✅ | `insecurity.ts:41` |
 | Cookies y sesión | — | — | ✅ | `insecurity.ts:192` |
@@ -208,6 +210,9 @@ La prueba tiene tres casos porque el control puede fallar de tres formas: dejar 
 ajeno (el BOLA), romper el carrito propio (falso positivo del control) o permitir el acceso sin
 sesión. Una prueba que solo verifica el caso feliz no demuestra nada.
 
+Los otros dos cierres —autorización por función (H20) y cantidad negativa (H13)— siguen el mismo
+patrón y su rojo/verde está en `CIERRES.md`.
+
 ### 5.2 Catálogo de cierre de los hallazgos priorizados
 
 | ID | Control que lo cierra | Cambio concreto | Cómo se verifica | Estado |
@@ -217,6 +222,7 @@ sesión. Una prueba que solo verifica el caso feliz no demuestra nada.
 | H03 | Lista blanca de campos | `UserModel.create({ email, password, role: 'customer' })` | Registro con `role: 'admin'` devuelve `customer` | Diseñado |
 | H04 | Cálculo en el servidor | Monto desde el recibo del pago, no de `req.body` | Recarga sin pago no acredita saldo | Requiere pasarela |
 | H05 | Filtro por dueño | `where: { id, UserId }` en `basket.ts` | `test_bola_basket.py` | **Implementado** |
+| H20 | Autorización por rol | `requester.data.role !== 'admin'` → 403 | `test_authz_usuarios.py` | **Implementado** |
 | H06 | Contención de ruta | `path.resolve` + `startsWith(base)` | `curl --path-as-is /ftp/../package.json` → 403 | Diseñado |
 | H07 | Retirar la ruta | No servir `encryptionkeys/` por HTTP | `GET /encryptionkeys/…` → 404 | Diseñado |
 | H08 | Eliminar `eval` | `JSON.parse` o saneamiento + CSP | Nombre con `#{...}` no se ejecuta | Diseñado |
@@ -224,7 +230,7 @@ sesión. Una prueba que solo verifica el caso feliz no demuestra nada.
 | H10 | Retirar la ruta | No servir `logs/` por HTTP | `GET /support/logs/…` → 404 | Diseñado |
 | H11 | Cabecera `Content-Disposition` | Forzar descarga y `X-Content-Type-Options` | Un HTML subido no se renderiza | Diseñado |
 | H12 | Comparación de origen | `new URL(url).origin === allowedOrigin` | `github.com.evil.com` se rechaza | Diseñado |
-| H13 | Validación de rango | `Number.isInteger(q) && q > 0 && q <= 100` | `quantity: -2` → 400; total > 0 | Diseñado |
+| H13 | Validación de rango | `Number.isInteger(q) && q > 0 && q <= 1000` | `test_cantidad_negativa.py` | **Implementado** |
 | H14 | Atributos de cookie | `{ httpOnly: true, secure: true, sameSite: 'strict' }` | `Set-Cookie` con los tres atributos | Diseñado |
 | H15 | Allowlist de algoritmo | `expressJwt({ algorithms: ['RS256'], audience, issuer })` | Token con `alg: none` rechazado | Diseñado |
 | H16 | Middleware de límite | `express-rate-limit` en `/rest/user/login` | El intento 11 responde 429 | Diseñado |
@@ -232,9 +238,10 @@ sesión. Una prueba que solo verifica el caso feliz no demuestra nada.
 | H18 | Registro de eventos | Log estructurado de login fallido y 403 | El log contiene evento, usuario e IP, sin contraseña | Diseñado |
 | H19 | — | Descartar el header o restringirlo al origen propio | No cambia el riesgo: falso positivo | Descartado |
 
-> **Honestidad de alcance.** Solo H05 está implementado y demostrado. Los demás están **diseñados**:
-> se sabe cuál es el control, dónde va y cómo se verifica, pero no se aplicaron. Un informe que
-> declare cerrado lo que no se probó vale menos que uno que distinga «cerrado» de «planificado».
+> **Honestidad de alcance.** H05, H13 y H20 están implementados y demostrados con prueba roja/verde;
+> el detalle está en `CIERRES.md`. Los demás están **diseñados**: se sabe cuál es el control, dónde va
+> y cómo se verifica, pero no se aplicaron. Un informe que declare cerrado lo que no se probó vale
+> menos que uno que distinga «cerrado» de «planificado».
 
 ### 5.3 El patrón de un cierre demostrable
 
@@ -278,7 +285,7 @@ Verificación: registrar con `"role": "admin"` y comprobar que la respuesta dice
 
 ```ts
 const quantity = Number(req.body.quantity)
-if (!Number.isInteger(quantity) || quantity <= 0 || quantity > 100) {
+if (!Number.isInteger(quantity) || quantity <= 0 || quantity > 1000) {
   return res.status(400).json({ status: 'error', message: 'Invalid quantity' })
 }
 ```
@@ -337,7 +344,8 @@ Verificación: `curl -sI http://127.0.0.1:3000/ | grep -i content-security-polic
    SQLi que Semgrep llamó `warning` es riesgo 25; el CORS que ZAP llamó Medium es riesgo 1.
 4. **La comparativa:** ningún hallazgo lo vieron las tres fuentes. La unión cubre; la intersección
    es casi vacía. Por eso se usan las tres.
-5. **El cierre:** se corrigió el BOLA con prueba roja/verde, regresión y PR. Los demás tienen control,
-   cambio y verificación definidos, y se declaran como planificados, no como cerrados.
+5. **El cierre:** tres controles implementados y demostrados —BOLA, autorización por función y
+   cantidad negativa— con prueba roja/verde, regresión y PR. Los demás tienen control, cambio y
+   verificación definidos, y se declaran como planificados, no como cerrados.
 6. **La lección:** una herramienta no demuestra nada por sí sola; la evidencia es la reproducción, la
    prueba y la salida del comando.
