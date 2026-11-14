@@ -61,11 +61,48 @@ Estos seis puntos salieron de la revisión humana de la sección 1.
 
 ## 2. DAST · OWASP ZAP
 
-_(Pendiente: se completa después del escaneo con `zap-baseline.py`.)_
+### Comando ejecutado
+
+```bash
+docker run --rm --network host \
+  -v "$PWD/seguridad/lab2":/zap/wrk:rw \
+  ghcr.io/zaproxy/zaproxy:stable \
+  zap-baseline.py -t http://127.0.0.1:3000 -r zap.html -J zap.json -I
+```
+
+**Resultado:**
+
+```text
+FAIL-NEW: 0   WARN-NEW: 7   INFO: 0   IGNORE: 0   PASS: 61
+```
+
+El JSON detalla **9 alertas**: 2 Medium, 4 Low y 3 informativas. La plantilla pide llevar a la
+tabla las Medium o High, así que el triage obligatorio son las dos primeras. Las demás se revisaron
+y se dejan abajo como contexto.
+
+### Tabla de triage (Medium y High)
 
 | Alerta | Riesgo | URL | ¿Verdadero o falso positivo? | Por qué | Fila ASVS |
 |---|---|---|---|---|---|
-| | | | | | |
+| **Content Security Policy (CSP) Header Not Set** | **Medium** (confianza High) | `/`, `/ftp`, `/ftp/encrypt.pyc`, `/sitemap.xml` | **Verdadero positivo** | `curl -sI http://127.0.0.1:3000/` no devuelve `Content-Security-Policy`. La aplicación sirve HTML, archivos de `/ftp/` y la SPA sin ninguna directiva que limite orígenes de scripts. Esto agrava el `eval()` de `userProfile.ts:65` y el XSS de `/ftp/quarantine/`: no hay segunda barrera. | **19** (3.4.3) |
+| **Cross-Domain Misconfiguration** | **Medium** (confianza Medium) | `/`, `/polyfills.js`, `/robots.txt`, `/rolldown-runtime-*.js`, `/sitemap.xml` | **Falso positivo** (con matiz de endurecimiento) | ZAP ve `Access-Control-Allow-Origin: *`. Pero la respuesta **no** incluye `Access-Control-Allow-Credentials: true`, así que el navegador no envía cookies en peticiones cruzadas y un sitio atacante no puede leer respuestas autenticadas. Los recursos marcados son públicos por diseño (JS, `robots.txt`, `sitemap.xml`). Según ASVS 3.4.2, `*` es aceptable cuando la respuesta no contiene información sensible. Aun así, lo correcto es eliminar el header o restringirlo al origen propio: es un problema de configuración, no una fuga explotable. | Sin fila directa (3.4.2, no incluido en las 25) |
+
+### Alertas Low e informativas (revisadas, fuera del triage obligatorio)
+
+| Alerta | Riesgo | Lectura |
+|---|---|---|
+| Dangerous JS Functions | Low | Detecta `eval` en los bundles de la SPA. **Refuerza** el hallazgo de Semgrep en `userProfile.ts:65`; no es un falso positivo, pero el origen ya está cubierto por la fila 15. |
+| Cross-Origin-Embedder-Policy Header Missing or Invalid | Low | Falta `Cross-Origin-Embedder-Policy`. Es endurecimiento para aislamiento de procesos; no hay impacto directo demostrado en esta aplicación. |
+| Cross-Origin-Opener-Policy Header Missing or Invalid | Low | Falta `Cross-Origin-Opener-Policy`. Igual que la anterior: defensa en profundidad contra tabnabbing y acceso a `window`. |
+| Deprecated Feature Policy Header Set | Low | La aplicación envía `Feature-Policy: payment 'self'`, reemplazado por `Permissions-Policy`. Confirma que las cabeceras se configuran de forma manual y desactualizada. |
+| Modern Web Application, Storable and Cacheable Content, Storable but Non-Cacheable Content | Informational | Contexto del escaneo (SPA, caché de estáticos). No son vulnerabilidades. |
+
+### Lo que ZAP no puede ver
+
+El escaneo pasivo no encontró el BOLA del carrito (`basket.ts:19`), ni el saldo manipulable
+(`wallet.ts:27`), ni la SQLi (`search.ts:23`), ni la asignación de rol. ZAP no tiene sesión de
+usuario ni conoce el modelo de datos: por eso el DAST se complementa con la revisión ASVS y con el
+SAST, no los reemplaza.
 
 ---
 
@@ -74,4 +111,5 @@ _(Pendiente: se completa después del escaneo con `zap-baseline.py`.)_
 | Fuente | Hallazgos | Verdaderos positivos | Falsos positivos |
 |---|:---:|:---:|:---:|
 | Semgrep (SAST) | 8 | 8 | 0 |
-| ZAP (DAST) | pendiente | pendiente | pendiente |
+| ZAP (DAST) — Medium/High | 2 | 1 | 1 |
+| **Total** | **10** | **9** | **1** |
