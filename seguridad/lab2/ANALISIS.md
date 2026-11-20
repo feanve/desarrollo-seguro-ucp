@@ -15,7 +15,7 @@ se puede saltar:
 |---|---|---|---|
 | 1. Detectar | ¿Qué dijo la herramienta? | Reporte crudo (`semgrep.sarif`, `zap.json`) | Semgrep marca `search.ts:23` como `warning` |
 | 2. Reproducir | ¿Puedo provocarlo yo? | Comando y salida | `GET /rest/products/search?q=' OR '1'='1` devuelve todo el catálogo |
-| 3. Clasificar | ¿Es real? | Verdadero o falso positivo, con la razón | 8 de 8 en Semgrep; 1 falso positivo en ZAP |
+| 3. Clasificar | ¿Es real? | Verdadero o falso positivo, con la razón | 7 de 8 en Semgrep; 2 falsos positivos (fileServer y CORS) |
 | 4. Valorar | ¿Cuánto importa **aquí**? | Impacto × probabilidad, justificados | La SQLi es crítica; el CORS es riesgo 1 |
 | 5. Decidir | ¿Corregir, mitigar, aceptar o transferir? | Requisito ASVS + control + prueba | BOLA: corregido y demostrado |
 
@@ -84,7 +84,7 @@ lo encontró: **S** Semgrep, **Z** ZAP, **H** revisión humana.
 | H03 | `role: 'admin'` aceptado en el registro | H | 8.2.3 | E01 | 5 | 4 | **20** | Corregir: `POST /api/Users` es público |
 | H04 | Saldo acreditado con monto del cliente (`wallet.ts:27`) | H | 8.2.3 | E02 | 4 | 4 | **16** | Corregir: dinero sin pago verificado |
 | H05 | BOLA del carrito (`basket.ts:19`) | H | 8.2.2 | I01 | 4 | 4 | **16** | **Corregido** y con prueba |
-| H06 | Path traversal en `fileServer.ts:32` | S | 13.4.7 | — | 4 | 4 | **16** | Corregir: lectura de archivos sin auth |
+| H06 | Path traversal en `fileServer.ts:32` | S | 13.4.7 | — | 1 | 1 | **1** | **Falso positivo**: `!file.includes('/')` bloquea `../`, `%2f` y `%2e%2e%2f`; `%00` → 400. Defensa en profundidad: `path.resolve` + `startsWith` |
 | H07 | Claves servidas por `keyServer.ts:14` | S | 13.3.1 | — | 4 | 4 | **16** | Corregir: material criptográfico expuesto |
 | H08 | `eval()` sobre el nombre de usuario (`userProfile.ts:65`) | S + H | 1.3.2 | — | 5 | 3 | **15** | Corregir: RCE, requiere víctima que visite el perfil |
 | H09 | MD5 para contraseñas (`insecurity.ts:41`) | H | 11.4.2 | — | 5 | 3 | **15** | Migrar: requiere volcar la base para ser útil |
@@ -113,7 +113,7 @@ dejado la SQLi para el final.
 
 | Fuente | Reportes | Verdaderos positivos | Falsos positivos | Exclusivos | Tiempo de ejecución |
 |---|:---:|:---:|:---:|:---:|---|
-| **Semgrep** (SAST) | 8 hallazgos | 8 | 0 | **4** (`fileServer`, `keyServer`, `logfileServer`, `quarantineServer`) | ~1 min |
+| **Semgrep** (SAST) | 8 hallazgos | 7 | 1 (fileServer) | **3** (`keyServer`, `logfileServer`, `quarantineServer`) | ~1 min |
 | **ZAP** (DAST pasivo) | 6 alertas con riesgo + 3 informativas | 5 | 1 (CORS) | **3** (`COEP`, `COOP`, `Feature-Policy`) | ~6 min |
 | **Revisión humana** (ASVS) | 25 filas | 25 | 0 | **21 filas sin evidencia de herramienta** | ~2,5 h |
 
@@ -138,7 +138,7 @@ dejado la SQLi para el final.
 | Inyección SQL | ✅ | — | ✅ | `search.ts:23`; verificado con `' OR '1'='1` |
 | Ejecución de código (`eval`) | ✅ | ✅ | ✅ | `userProfile.ts:65` (servidor) y bundles (cliente) |
 | Secretos en código | ✅ | — | ✅ | `insecurity.ts:21`, reportado en `:54` |
-| Path traversal | ✅ | — | — | `fileServer.ts:32` |
+| Path traversal | ✅ (FP) | — | — | `fileServer.ts:32`; la comprobación de `fileServer.ts:17` bloquea la salida |
 | Open redirect | ✅ | — | ✅ | `redirect.ts:18` |
 | XSS almacenado | ✅ | — | — | `/ftp/quarantine/` |
 | BOLA / IDOR | — | — | ✅ | `basket.ts:19` |
@@ -159,7 +159,7 @@ dejado la SQLi para el final.
 ### 4.3 Por qué cada herramienta ve lo que ve
 
 **Semgrep** razona sobre el código. Ve patrones peligrosos aunque la ruta nunca se ejecute, por eso
-encuentra los cuatro `sendFile` que la revisión humana pasó por alto. No puede ver:
+encuentra las cuatro rutas `sendFile`: tres son verdaderas (`keyServer`, `logfileServer`, `quarantineServer`) y una falsa (`fileServer`). No puede ver:
 - **Propiedad de los datos** (BOLA): no hay patrón que diga que `id` debe pertenecer al usuario.
 - **Lógica de negocio**: que un saldo no puede venir del cliente no es una regla sintáctica.
 - **Estado de configuración**: HSTS, CSP y CORS viven en el servidor, no en el repositorio.
@@ -173,21 +173,20 @@ pruebas pasivas. No puede ver:
 - **Lógica de negocio**: no intenta una cantidad negativa ni un rol admin.
 
 **La revisión humana** razona sobre el diseño. Es la única que encontró BOLA, saldo, rol, MD5,
-cookies, rate limit y logging. Su debilidad es la opuesta: no es exhaustiva. Se le escaparon cuatro
-rutas con `sendFile` que Semgrep sí encontró, y no puede repetirse igual dos veces.
+cookies, rate limit y logging. Su debilidad es la opuesta: no es exhaustiva. Se le escaparon tres rutas con `sendFile` que Semgrep sí encontró y que resultaron verdaderas; la cuarta (`fileServer`) fue un falso positivo.
 
 ### 4.4 Coste, ruido y precisión
 
 | Fuente | Precisión | Ruido de triage | Escalable | Depende de |
 |---|:---:|---|---|---|
-| Semgrep | 8/8 (100 %) | Bajo: 8 hallazgos, todos reales | Sí, en CI | Reglas y lenguaje |
+| Semgrep | 7/8 (87,5 %) | Bajo: 1 falso positivo (fileServer) entre 8 | Sí, en CI | Reglas y lenguaje |
 | ZAP | 5/6 (83 %) | Medio: 1 falso positivo entre 6, más 3 informativas | Sí, en CI | Sesión y cobertura de rutas |
 | Humana | 25/25 (100 %) | Ninguno, pero caro | No | Conocimiento del revisor |
 
 **Conclusión de la comparativa:** las tres fuentes son complementarias, no intercambiables. La unión
 cubre lo que ninguna alcanza sola; la intersección es casi vacía. Un pipeline que solo corra Semgrep
 y ZAP no habría encontrado el BOLA, el saldo ni el rol admin. Una revisión humana sin herramientas no
-habría encontrado las cuatro rutas de `sendFile` ni las cabeceras.
+habría encontrado las tres rutas de `sendFile` reales ni las cabeceras.
 
 ---
 
@@ -223,7 +222,7 @@ patrón y su rojo/verde está en `CIERRES.md`.
 | H04 | Cálculo en el servidor | Monto desde el recibo del pago, no de `req.body` | Recarga sin pago no acredita saldo | Requiere pasarela |
 | H05 | Filtro por dueño | `where: { id, UserId }` en `basket.ts` | `test_bola_basket.py` | **Implementado** |
 | H20 | Autorización por rol | `requester.data.role !== 'admin'` → 403 | `test_authz_usuarios.py` | **Implementado** |
-| H06 | Contención de ruta | `path.resolve` + `startsWith(base)` | `curl --path-as-is /ftp/../package.json` → 403 | Diseñado |
+| H06 | Contención de ruta (defensa en profundidad) | `path.resolve` + `startsWith(base)` | `curl --path-as-is /ftp/../package.json` → 403 (ya ocurre sin el cambio) | **Falso positivo** |
 | H07 | Retirar la ruta | No servir `encryptionkeys/` por HTTP | `GET /encryptionkeys/…` → 404 | Diseñado |
 | H08 | Eliminar `eval` | `JSON.parse` o saneamiento + CSP | Nombre con `#{...}` no se ejecuta | Diseñado |
 | H09 | KDF lento | `argon2id` o `bcrypt` con sal | Hash deja de ser MD5; login sigue funcionando | Requiere migración |
@@ -293,7 +292,7 @@ if (!Number.isInteger(quantity) || quantity <= 0 || quantity > 1000) {
 Verificación: `POST /api/BasketItems` con `quantity: -2` responde 400; la orden ya no puede dar
 total negativo.
 
-**H06 · Path traversal (`app-src/routes/fileServer.ts:32`)**
+**H06 · Path traversal (`app-src/routes/fileServer.ts:32`) — falso positivo, defensa en profundidad**
 
 ```ts
 const base = path.resolve('ftp')
@@ -303,7 +302,7 @@ if (!target.startsWith(base + path.sep)) {
 }
 ```
 
-Verificación: `curl --path-as-is 'http://127.0.0.1:3000/ftp/../package.json'` responde 403.
+La comprobación `!file.includes('/')` ya bloquea `../`, `%2f` y `%2e%2e%2f` (403) y `%00` (400). No se reproduce salida de `ftp/`. Se propone `path.resolve` + `startsWith` para que la garantía no dependa de la decodificación de Express.
 
 **H17 · CSP (`server.ts`, fuera de `app-src/`)**
 

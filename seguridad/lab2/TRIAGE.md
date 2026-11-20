@@ -33,16 +33,17 @@ semgrep scan \
 | Regla | Archivo:línea | ¿Verdadero o falso positivo? | Por qué | Fila ASVS |
 |---|---|---|---|---|
 | `javascript.jsonwebtoken.security.jwt-hardcode.hardcoded-jwt-secret` | `app-src/lib/insecurity.ts:54` | **Verdadero positivo** | `jwt.sign(user, privateKey, ...)` usa la llave privada RSA escrita en el código en `insecurity.ts:21`. No es un secreto de ejemplo: con esa llave cualquiera que lea el repositorio puede firmar tokens válidos para la aplicación. | **17** (13.3.1), **7** (9.1.2) |
-| `javascript.express.security.audit.express-res-sendfile.express-res-sendfile` | `app-src/routes/fileServer.ts:32` | **Verdadero positivo** | `res.sendFile(path.resolve('ftp/', file))` usa `file` tomado de la URL. La validación de `fileServer.ts:56-57` solo exige que termine en `.md` o `.pdf`, y `cutOffPoisonNullByte` no bloquea `../`; se puede salir del directorio `ftp/`. | **19** (13.4.7) |
+| `javascript.express.security.audit.express-res-sendfile.express-res-sendfile` | `app-src/routes/fileServer.ts:32` | **Falso positivo** | El `sendFile` solo se alcanza si `file` no contiene `/` (`fileServer.ts:17`). Express decodifica `%2f`, `%2e%2e%2f` y `../` antes de esa comprobación: los tres responden **403**; `package.json%00.md` responde **400**. Además, `verify()` limita a `.md`/`.pdf`. No se reprodujo salida de `ftp/`; se recomienda `path.resolve` + `startsWith` como defensa en profundidad (H06, riesgo residual). | **19** (13.4.7; defensa en profundidad) |
 | `javascript.express.security.audit.express-res-sendfile.express-res-sendfile` | `app-src/routes/keyServer.ts:14` | **Verdadero positivo** | Sirve cualquier archivo de `encryptionkeys/` sin autenticación. La única comprobación es que el nombre no contenga `/`, así que el material de claves queda accesible por HTTP. | **17** (13.3.1, 13.3.2) |
 | `javascript.express.security.audit.express-res-sendfile.express-res-sendfile` | `app-src/routes/logfileServer.ts:14` | **Verdadero positivo** | Expone `logs/` sin autenticación. Los registros contienen correos, IP y actividad de usuarios, que son datos personales (Ley 1581). | **20** (16.4.2), **12** (14.2.6) |
 | `javascript.express.security.audit.express-res-sendfile.express-res-sendfile` | `app-src/routes/quarantineServer.ts:14` | **Verdadero positivo** | Sirve archivos subidos por usuarios desde cuarentena y en el mismo origen de la aplicación. Un archivo HTML o SVG subido se ejecuta como contenido del sitio: XSS almacenado. | **15** (1.2.1), **19** (13.4.7) |
 | `javascript.express.security.audit.express-open-redirect.express-open-redirect` | `app-src/routes/redirect.ts:18` | **Verdadero positivo** | `isRedirectAllowed()` (`insecurity.ts:136`) valida con `url.includes(allowedUrl)`. Un atacante usa `https://github.com/juice-shop/juice-shop.malicioso.com`, que contiene la cadena permitida, y la redirección se acepta. | **15** (3.7.2) |
 | `javascript.sequelize.security.audit.sequelize-injection-express.express-sequelize-injection` | `app-src/routes/search.ts:23` | **Verdadero positivo** | `criteria` se interpola dentro del SQL con plantilla de cadena. Es la misma falla de la fila 14 y de la amenaza **T02** del Lab 1. Confirmación manual: `GET /rest/products/search?q=' OR '1'='1` devuelve todo el catálogo. | **14** y **22** (1.2.4) |
-| `javascript.lang.security.audit.code-string-concat.code-string-concat` | `app-src/routes/userProfile.ts:65` | **Verdadero positivo** | `username = eval(code)` ejecuta el contenido de `#{...}` que el usuario puso en su nombre. Es ejecución de código en el servidor (el reto de SSTI de Juice Shop), habilitada por defecto. | **15** (1.3.2) |
+| `javascript.lang.security.audit.code-string-concat.code-string-concat` | `app-src/routes/userProfile.ts:65` | **Verdadero positivo** | `username = eval(code)` ejecuta el contenido de `#{...}` que el usuario puso en su nombre. Es ejecución de código en el servidor (el reto de SSTI de Juice Shop). En la build Docker el reto `usernameXssChallenge` está deshabilitado (`disabledEnv: Docker`), así que no es explotable en esta instancia; el código sigue siendo vulnerable si se habilita. | **15** (1.3.2) |
 
-**Falsos positivos: 0 de 8.** Los ocho se confirmaron leyendo el código y, en el caso de la SQLi,
-con una petición manual.
+**Falsos positivos: 1 de 8.** Siete se confirmaron leyendo el código y, en el caso de la SQLi,
+con una petición manual. El de `fileServer.ts:32` se descartó al probar los payloads de traversal:
+la comprobación `!file.includes('/')` y la allowlist de extensiones bloquean la salida del directorio.
 
 ### Lo que Semgrep no encontró
 
@@ -110,6 +111,6 @@ SAST, no los reemplaza.
 
 | Fuente | Hallazgos | Verdaderos positivos | Falsos positivos |
 |---|:---:|:---:|:---:|
-| Semgrep (SAST) | 8 | 8 | 0 |
+| Semgrep (SAST) | 8 | 7 | 1 |
 | ZAP (DAST) — Medium/High | 2 | 1 | 1 |
-| **Total** | **10** | **9** | **1** |
+| **Total** | **10** | **8** | **2** |
