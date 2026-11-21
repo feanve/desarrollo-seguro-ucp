@@ -1,0 +1,164 @@
+{
+  "auditgate_version": "0.2.0",
+  "gate": "blocked",
+  "base": {
+    "ref": "origin/main",
+    "merge_base": "cf94312ac5f55925c1b8f785bfd536a574ebd451"
+  },
+  "head": "cf94312ac5f55925c1b8f785bfd536a574ebd451",
+  "uncommitted_changes": false,
+  "languages": {
+    "typescript": 113,
+    "python": 30,
+    "javascript": 3,
+    "c": 1,
+    "rust": 1
+  },
+  "sast_coverage": {
+    "typescript": [
+      "reglas propias",
+      "p/typescript"
+    ],
+    "python": [
+      "reglas propias",
+      "p/python"
+    ],
+    "javascript": [
+      "reglas propias",
+      "p/javascript"
+    ],
+    "c": [
+      "p/c"
+    ],
+    "rust": [
+      "p/rust"
+    ]
+  },
+  "uncovered_languages": [],
+  "checks": [
+    {
+      "id": "secrets",
+      "tool": "gitleaks",
+      "status": "passed",
+      "detail": "sin commits nuevos respecto a la base",
+      "findings": []
+    },
+    {
+      "id": "sast",
+      "tool": "semgrep",
+      "status": "blocked",
+      "detail": "",
+      "findings": [
+        {
+          "rule": "javascript.sequelize.security.audit.sequelize-injection-express.express-sequelize-injection",
+          "path": "app-src/routes/search.ts",
+          "line": 23,
+          "message": "Detected a sequelize statement that is tainted by user-input. This could lead to SQL injection if the variable is user-controlled and is not properly sanitized. In order to prevent SQL injection, it is recommended to use parameterized queri",
+          "severity": "error"
+        },
+        {
+          "rule": "javascript.lang.security.audit.code-string-concat.code-string-concat",
+          "path": "app-src/routes/userProfile.ts",
+          "line": 65,
+          "message": "Found data from an Express or Next web request flowing to `eval`. If this data is user-controllable this can lead to execution of arbitrary system commands in the context of your application process. Avoid `eval` whenever possible.",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.python.hardcoded-credential",
+          "path": "demos/sesion-1/03-api/app_insegura.py",
+          "line": 15,
+          "message": "Credencial hardcodeada en app.config[\"SECRET_KEY\"]. Léela de variables de entorno o de un secret manager.",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.flask.debug-enabled",
+          "path": "demos/sesion-1/03-api/app_insegura.py",
+          "line": 80,
+          "message": "Flask con debug=True expone el debugger de Werkzeug (RCE).",
+          "severity": "error"
+        },
+        {
+          "rule": "python.flask.security.injection.tainted-sql-string.tainted-sql-string",
+          "path": "demos/sesion-2/02-tienda/app.py",
+          "line": 90,
+          "message": "Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the dat",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.flask.sqli-string-built-query",
+          "path": "demos/sesion-2/02-tienda/app.py",
+          "line": 91,
+          "message": "Query SQL construida con interpolación de strings y ejecutada con db().execute(). Usa parámetros: cursor.execute(\"... WHERE x = ?\", (val,)).",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.flask.command-injection-shell-true",
+          "path": "demos/sesion-2/02-tienda/app.py",
+          "line": 130,
+          "message": "subprocess con shell=True y un comando no literal. Pasa argumentos como lista y sin shell=True.",
+          "severity": "error"
+        },
+        {
+          "rule": "python.lang.security.audit.dangerous-subprocess-use-tainted-env-args.dangerous-subprocess-use-tainted-env-args",
+          "path": "demos/sesion-2/02-tienda/app.py",
+          "line": 130,
+          "message": "Detected subprocess function 'run' with user controlled data. A malicious actor could leverage this to perform command injection. You may consider using 'shlex.quote()'.",
+          "severity": "error"
+        },
+        {
+          "rule": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true",
+          "path": "demos/sesion-2/02-tienda/app.py",
+          "line": 130,
+          "message": "Found 'subprocess' function 'run' with 'shell=True'. This is dangerous because this call will spawn the command using a shell process. Doing so propagates current shell settings and variables, which makes it much easier for a malicious acto",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.python.hardcoded-credential",
+          "path": "demos/sesion-3/02-billetera/app.py",
+          "line": 91,
+          "message": "Credencial hardcodeada en JWT_SECRETO. Léela de variables de entorno o de un secret manager.",
+          "severity": "error"
+        },
+        {
+          "rule": "python.jwt.security.jwt-hardcode.jwt-python-hardcoded-secret",
+          "path": "demos/sesion-3/02-billetera/app.py",
+          "line": 95,
+          "message": "Hardcoded JWT secret or private key is used. This is a Insufficiently Protected Credentials weakness: https://cwe.mitre.org/data/definitions/522.html Consider using an appropriate security mechanism to protect the credentials (e.g. keeping ",
+          "severity": "error"
+        },
+        {
+          "rule": "python.jwt.security.unverified-jwt-decode.unverified-jwt-decode",
+          "path": "demos/sesion-3/02-billetera/app.py",
+          "line": 101,
+          "message": "Detected JWT token decoded with 'verify=False'. This bypasses any integrity checks for the token which means the token could be tampered with by malicious actors. Ensure that the JWT token is verified.",
+          "severity": "error"
+        },
+        {
+          "rule": "auditgate.flask.sqli-string-built-query",
+          "path": "demos/sesion-3/02-billetera/app.py",
+          "line": 160,
+          "message": "Query SQL construida con interpolación de strings y ejecutada con db().execute(). Usa parámetros: cursor.execute(\"... WHERE x = ?\", (val,)).",
+          "severity": "error"
+        },
+        {
+          "rule": "python.flask.security.injection.tainted-sql-string.tainted-sql-string",
+          "path": "demos/sesion-3/02-billetera/app.py",
+          "line": 160,
+          "message": "Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the dat",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "id": "actions",
+      "tool": "auditgate",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    }
+  ],
+  "summary": {
+    "blocking_findings": 14,
+    "skipped": []
+  }
+}
