@@ -1,0 +1,410 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:2029b02a-d408-47e5-88b9-34f0431911b9",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-11-21T14:33:45+00:00",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "manufacturer": {
+            "name": "Aqua Security Software Ltd."
+          },
+          "group": "aquasecurity",
+          "name": "trivy",
+          "version": "0.76.2"
+        }
+      ]
+    },
+    "component": {
+      "bom-ref": "d6c9664c-e6bc-4042-93bc-f3b7ac313202",
+      "type": "application",
+      "name": ".",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:SchemaVersion",
+          "value": "2"
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "46d5d040-eec4-4498-be0d-fb365287fd73",
+      "type": "library",
+      "name": "flask",
+      "version": "3.1.0",
+      "purl": "pkg:pypi/flask@3.1.0",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "7c706a3b-266c-4e37-933f-965e9d257550",
+      "type": "library",
+      "name": "pytest",
+      "version": "8.3.4",
+      "purl": "pkg:pypi/pytest@8.3.4",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "7ef9ee66-955d-4386-adba-81643f33e370",
+      "type": "application",
+      "name": "demos/sesion-3/02-billetera/requirements.txt",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:Class",
+          "value": "lang-pkgs"
+        },
+        {
+          "name": "aquasecurity:trivy:Type",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "8e446e32-25af-4018-82a0-8c2723028c32",
+      "type": "library",
+      "name": "pytest",
+      "version": "8.3.4",
+      "purl": "pkg:pypi/pytest@8.3.4",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "a0d8deb1-d47c-4d1a-9d0e-e88e7cc93d19",
+      "type": "library",
+      "name": "flask",
+      "version": "3.1.0",
+      "purl": "pkg:pypi/flask@3.1.0",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "a88f79a7-05f8-4ace-a58e-b8477d00847f",
+      "type": "application",
+      "name": "demos/sesion-1/03-api/requirements.txt",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:Class",
+          "value": "lang-pkgs"
+        },
+        {
+          "name": "aquasecurity:trivy:Type",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "f2cfee0e-de7a-496d-a739-1260971d49e6",
+      "type": "application",
+      "name": "demos/sesion-2/02-tienda/requirements.txt",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:Class",
+          "value": "lang-pkgs"
+        },
+        {
+          "name": "aquasecurity:trivy:Type",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "f9a486b6-4eaa-4d82-9390-638c36289c88",
+      "type": "application",
+      "name": "demos/sesion-4/log4shell/proyecto-java/gradle.lockfile",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:Class",
+          "value": "lang-pkgs"
+        },
+        {
+          "name": "aquasecurity:trivy:Type",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "fd389d92-c0c1-43c2-a5f2-9330befbe3de",
+      "type": "library",
+      "name": "flask",
+      "version": "3.1.0",
+      "purl": "pkg:pypi/flask@3.1.0",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.12.3",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-annotations",
+      "version": "2.12.3",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.12.3",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "com.fasterxml.jackson.core:jackson-annotations:2.12.3"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.12.3",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-core",
+      "version": "2.12.3",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.12.3",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "com.fasterxml.jackson.core:jackson-core:2.12.3"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.3",
+      "type": "library",
+      "group": "com.fasterxml.jackson.core",
+      "name": "jackson-databind",
+      "version": "2.12.3",
+      "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.3",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "com.fasterxml.jackson.core:jackson-databind:2.12.3"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/org.apache.logging.log4j/log4j-api@2.14.1",
+      "type": "library",
+      "group": "org.apache.logging.log4j",
+      "name": "log4j-api",
+      "version": "2.14.1",
+      "purl": "pkg:maven/org.apache.logging.log4j/log4j-api@2.14.1",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "org.apache.logging.log4j:log4j-api:2.14.1"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+      "type": "library",
+      "group": "org.apache.logging.log4j",
+      "name": "log4j-core",
+      "version": "2.14.1",
+      "purl": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "org.apache.logging.log4j:log4j-core:2.14.1"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:maven/org.slf4j/slf4j-api@1.7.30",
+      "type": "library",
+      "group": "org.slf4j",
+      "name": "slf4j-api",
+      "version": "1.7.30",
+      "purl": "pkg:maven/org.slf4j/slf4j-api@1.7.30",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgID",
+          "value": "org.slf4j:slf4j-api:1.7.30"
+        },
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "gradle"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:pypi/argon2-cffi@23.1.0",
+      "type": "library",
+      "name": "argon2-cffi",
+      "version": "23.1.0",
+      "purl": "pkg:pypi/argon2-cffi@23.1.0",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:pypi/cryptography@44.0.0",
+      "type": "library",
+      "name": "cryptography",
+      "version": "44.0.0",
+      "purl": "pkg:pypi/cryptography@44.0.0",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:pypi/pyjwt@2.10.1",
+      "type": "library",
+      "name": "pyjwt",
+      "version": "2.10.1",
+      "purl": "pkg:pypi/pyjwt@2.10.1",
+      "properties": [
+        {
+          "name": "aquasecurity:trivy:PkgType",
+          "value": "pip"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "46d5d040-eec4-4498-be0d-fb365287fd73",
+      "dependsOn": []
+    },
+    {
+      "ref": "7c706a3b-266c-4e37-933f-965e9d257550",
+      "dependsOn": []
+    },
+    {
+      "ref": "7ef9ee66-955d-4386-adba-81643f33e370",
+      "dependsOn": [
+        "46d5d040-eec4-4498-be0d-fb365287fd73",
+        "8e446e32-25af-4018-82a0-8c2723028c32",
+        "pkg:pypi/argon2-cffi@23.1.0",
+        "pkg:pypi/cryptography@44.0.0",
+        "pkg:pypi/pyjwt@2.10.1"
+      ]
+    },
+    {
+      "ref": "8e446e32-25af-4018-82a0-8c2723028c32",
+      "dependsOn": []
+    },
+    {
+      "ref": "a0d8deb1-d47c-4d1a-9d0e-e88e7cc93d19",
+      "dependsOn": []
+    },
+    {
+      "ref": "a88f79a7-05f8-4ace-a58e-b8477d00847f",
+      "dependsOn": [
+        "fd389d92-c0c1-43c2-a5f2-9330befbe3de"
+      ]
+    },
+    {
+      "ref": "d6c9664c-e6bc-4042-93bc-f3b7ac313202",
+      "dependsOn": [
+        "7ef9ee66-955d-4386-adba-81643f33e370",
+        "a88f79a7-05f8-4ace-a58e-b8477d00847f",
+        "f2cfee0e-de7a-496d-a739-1260971d49e6",
+        "f9a486b6-4eaa-4d82-9390-638c36289c88"
+      ]
+    },
+    {
+      "ref": "f2cfee0e-de7a-496d-a739-1260971d49e6",
+      "dependsOn": [
+        "7c706a3b-266c-4e37-933f-965e9d257550",
+        "a0d8deb1-d47c-4d1a-9d0e-e88e7cc93d19"
+      ]
+    },
+    {
+      "ref": "f9a486b6-4eaa-4d82-9390-638c36289c88",
+      "dependsOn": [
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.12.3",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.12.3",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.3",
+        "pkg:maven/org.apache.logging.log4j/log4j-api@2.14.1",
+        "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+        "pkg:maven/org.slf4j/slf4j-api@1.7.30"
+      ]
+    },
+    {
+      "ref": "fd389d92-c0c1-43c2-a5f2-9330befbe3de",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.12.3",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.12.3",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.12.3",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.apache.logging.log4j/log4j-api@2.14.1",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.apache.logging.log4j/log4j-core@2.14.1",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.slf4j/slf4j-api@1.7.30",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/argon2-cffi@23.1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/cryptography@44.0.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/pyjwt@2.10.1",
+      "dependsOn": []
+    }
+  ],
+  "vulnerabilities": []
+}
