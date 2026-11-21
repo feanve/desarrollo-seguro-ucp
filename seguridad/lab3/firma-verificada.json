@@ -1,0 +1,14 @@
+[
+  {
+    "critical": {
+      "identity": {
+        "docker-reference": "devseguro-ucp/lab3:demo"
+      },
+      "image": {
+        "docker-manifest-digest": "sha256:d8b248a335508a5482390a4242637bc902c1d3ec740cb2de135d57b282937748"
+      },
+      "type": "cosign container image signature"
+    },
+    "optional": null
+  }
+]

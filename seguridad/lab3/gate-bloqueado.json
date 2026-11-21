@@ -1,0 +1,80 @@
+{
+  "auditgate_version": "0.2.0",
+  "gate": "blocked",
+  "base": {
+    "ref": "origin/main",
+    "merge_base": "cf94312ac5f55925c1b8f785bfd536a574ebd451"
+  },
+  "head": "8d58f8a51e54e7e4f025a3d23d99da5427b3ad94",
+  "uncommitted_changes": false,
+  "languages": {
+    "typescript": 113,
+    "python": 31,
+    "javascript": 3,
+    "c": 1,
+    "rust": 1
+  },
+  "sast_coverage": {
+    "typescript": [
+      "reglas propias",
+      "p/typescript"
+    ],
+    "python": [
+      "reglas propias",
+      "p/python"
+    ],
+    "javascript": [
+      "reglas propias",
+      "p/javascript"
+    ],
+    "c": [
+      "p/c"
+    ],
+    "rust": [
+      "p/rust"
+    ]
+  },
+  "uncovered_languages": [],
+  "checks": [
+    {
+      "id": "secrets",
+      "tool": "gitleaks",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    },
+    {
+      "id": "sast",
+      "tool": "semgrep",
+      "status": "blocked",
+      "detail": "",
+      "findings": [
+        {
+          "rule": "auditgate.flask.sqli-string-built-query",
+          "path": "seguridad/lab3/poc/buscar.py",
+          "line": 15,
+          "message": "Query SQL construida con interpolación de strings y ejecutada con db.execute(). Usa parámetros: cursor.execute(\"... WHERE x = ?\", (val,)).",
+          "severity": "error"
+        },
+        {
+          "rule": "python.flask.security.injection.tainted-sql-string.tainted-sql-string",
+          "path": "seguridad/lab3/poc/buscar.py",
+          "line": 15,
+          "message": "Detected user input used to manually construct a SQL string. This is usually bad practice because manual construction could accidentally result in a SQL injection. An attacker could use a SQL injection to steal or modify contents of the dat",
+          "severity": "error"
+        }
+      ]
+    },
+    {
+      "id": "actions",
+      "tool": "auditgate",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    }
+  ],
+  "summary": {
+    "blocking_findings": 2,
+    "skipped": []
+  }
+}

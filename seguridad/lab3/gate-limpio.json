@@ -1,0 +1,65 @@
+{
+  "auditgate_version": "0.2.0",
+  "gate": "passed",
+  "base": {
+    "ref": "1483edd",
+    "merge_base": "1483edd4dbc1dd5a5ae52fd771387ce43e42b037"
+  },
+  "head": "cf94312ac5f55925c1b8f785bfd536a574ebd451",
+  "uncommitted_changes": false,
+  "languages": {
+    "typescript": 113,
+    "python": 30,
+    "javascript": 3,
+    "c": 1,
+    "rust": 1
+  },
+  "sast_coverage": {
+    "typescript": [
+      "reglas propias",
+      "p/typescript"
+    ],
+    "python": [
+      "reglas propias",
+      "p/python"
+    ],
+    "javascript": [
+      "reglas propias",
+      "p/javascript"
+    ],
+    "c": [
+      "p/c"
+    ],
+    "rust": [
+      "p/rust"
+    ]
+  },
+  "uncovered_languages": [],
+  "checks": [
+    {
+      "id": "secrets",
+      "tool": "gitleaks",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    },
+    {
+      "id": "sast",
+      "tool": "semgrep",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    },
+    {
+      "id": "actions",
+      "tool": "auditgate",
+      "status": "passed",
+      "detail": "",
+      "findings": []
+    }
+  ],
+  "summary": {
+    "blocking_findings": 0,
+    "skipped": []
+  }
+}
