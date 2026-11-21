@@ -1,0 +1,10 @@
+Semgrep OSS	fail	10s	https://github.com/feanve/desarrollo-seguro-ucp/runs/136688757924
+auditgate / 🔍 SAST	fail	1m1s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688493496
+auditgate / 🚦 Security Gate	fail	3s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688803438
+auditgate / 🔑 Secrets	pass	22s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688493458
+auditgate / 🏗️ IaC	skipping	0	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688495331
+auditgate / 🐳 Container	skipping	0	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688494992
+auditgate / 📦 Dependencies	pass	14s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688493394
+auditgate / 🤖 AI triage (advisory)	pass	23s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688803522
+auditgate / 🧬 Rules + Tests + Pipeline integrity	pass	32s	https://github.com/feanve/desarrollo-seguro-ucp/actions/runs/44852994260/job/136688493519
+gitleaks	pass	4s	https://github.com/feanve/desarrollo-seguro-ucp/runs/136688564099
