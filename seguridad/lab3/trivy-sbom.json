@@ -3,8 +3,8 @@
   "Trivy": {
     "Version": "0.76.2"
   },
-  "ReportID": "01a1fe88-6b44-7279-9244-8e009cd0b90b",
-  "CreatedAt": "2026-11-21T09:35:15.65216574-05:00",
+  "ReportID": "01a1ff70-734c-7625-b515-b74209075305",
+  "CreatedAt": "2026-11-21T13:48:42.060405913-05:00",
   "ArtifactName": "seguridad/lab3/sbom.cdx.json",
   "ArtifactType": "cyclonedx",
   "Results": [
@@ -18,8 +18,8 @@
           "Name": "flask",
           "Identifier": {
             "PURL": "pkg:pypi/flask@3.1.0",
-            "UID": "72c571052f366389",
-            "BOMRef": "fd389d92-c0c1-43c2-a5f2-9330befbe3de"
+            "UID": "aa00aa28dfbbf7f",
+            "BOMRef": "9e0c171f-863f-476d-8b69-98f27129929c"
           },
           "Version": "3.1.0"
         }
@@ -35,8 +35,8 @@
           "Name": "flask",
           "Identifier": {
             "PURL": "pkg:pypi/flask@3.1.0",
-            "UID": "cdaec70ff778998b",
-            "BOMRef": "a0d8deb1-d47c-4d1a-9d0e-e88e7cc93d19"
+            "UID": "4edf1a79ee9ed1ef",
+            "BOMRef": "e88be29e-8a90-4f47-9295-c9590bedcab0"
           },
           "Version": "3.1.0"
         },
@@ -45,8 +45,8 @@
           "Name": "pytest",
           "Identifier": {
             "PURL": "pkg:pypi/pytest@8.3.4",
-            "UID": "6ebbb38dd851105e",
-            "BOMRef": "7c706a3b-266c-4e37-933f-965e9d257550"
+            "UID": "f497f5a08dafcde6",
+            "BOMRef": "9bb1cd05-47a0-40b9-b647-aa8917ef7f69"
           },
           "Version": "8.3.4"
         }
@@ -82,8 +82,8 @@
           "Name": "flask",
           "Identifier": {
             "PURL": "pkg:pypi/flask@3.1.0",
-            "UID": "1a5104d89980dd39",
-            "BOMRef": "46d5d040-eec4-4498-be0d-fb365287fd73"
+            "UID": "c2fbe4e437aefe0",
+            "BOMRef": "fe5ce523-4d99-48be-85d7-fc216dc837b2"
           },
           "Version": "3.1.0"
         },
@@ -102,8 +102,8 @@
           "Name": "pytest",
           "Identifier": {
             "PURL": "pkg:pypi/pytest@8.3.4",
-            "UID": "9dbdad8080c354f5",
-            "BOMRef": "8e446e32-25af-4018-82a0-8c2723028c32"
+            "UID": "5bc673c22b19c6ad",
+            "BOMRef": "7d900b70-cfde-4f5f-a3fd-1bc0b965a82f"
           },
           "Version": "8.3.4"
         }
