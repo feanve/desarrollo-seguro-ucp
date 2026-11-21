@@ -12,3 +12,6 @@ datos/panorama/*.log
 demos/sesion-2/02-tienda/.soluciones/
 demos/sesion-3/02-billetera/.soluciones/
 demos/sesion-3/02-billetera/zap/reportes/
+
+# Salidas generadas por la prueba de la regla del Lab 3
+seguridad/lab3/reglas/fixtures/*.json

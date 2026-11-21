@@ -1,0 +1,11 @@
+rules:
+  - id: lab3.sql-por-concatenacion
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Consulta SQL construida con % o .format(): use parámetros enlazados.
+      Amenaza del Lab 1: inyección SQL. ASVS 5.0 V1.14.
+    patterns:
+      - pattern-either:
+          - pattern: $CUR.execute($SQL % $ARGS, ...)
+          - pattern: $CUR.execute($SQL.format(...), ...)
