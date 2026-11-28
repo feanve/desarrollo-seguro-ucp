@@ -1,0 +1,30 @@
+# Evidencia HTTP · Laboratorio 4
+# Servidor: http://127.0.0.1:8099 (solo 127.0.0.1) · datos ficticios
+
+## inyección directa vulnerable
+GET /chat?modo=vulnerable&escenario=directa
+HTTP 200 · 6586 bytes · marcador '3 → 2': sí
+
+## inyección indirecta vulnerable
+GET /chat?modo=vulnerable&escenario=indirecta
+HTTP 200 · 7107 bytes · marcador '30 × Portátil': sí
+
+## PII vulnerable
+GET /chat?modo=vulnerable&escenario=pii
+HTTP 200 · 7567 bytes · marcador '1094005678': sí
+
+## inyección directa guardada
+GET /chat?modo=guardado&escenario=directa
+HTTP 200 · 7228 bytes · marcador 'rol_insuficiente': sí
+
+## inyección indirecta guardada
+GET /chat?modo=guardado&escenario=indirecta
+HTTP 200 · 7715 bytes · marcador 'origen_no_confiable': sí
+
+## PII guardada
+GET /chat?modo=guardado&escenario=pii
+HTTP 200 · 7577 bytes · marcador '[documento omitido]': sí
+
+## HITL pendiente
+GET /chat?modo=guardado&escenario=hitl
+HTTP 200 · 7572 bytes · marcador 'Confirmar y ejecutar': sí

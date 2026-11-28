@@ -1,0 +1,36 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Pruebas · Lab 4</title><style>
+body{margin:0;background:#0b1220;color:#e6edf7;font:15px/1.5 -apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+main{max-width:1200px;margin:0 auto;padding:30px 34px}
+h1{margin:0 0 4px;font-size:26px}.sub{color:#93a4bd;margin:0 0 18px}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:13px;
+background:rgba(34,197,94,.14);color:#86efac;border:1px solid rgba(34,197,94,.45)}
+pre{background:#0f1728;border:1px solid #233149;border-radius:12px;padding:18px;font:12.5px/1.5
+'JetBrains Mono',ui-monospace,Menlo,monospace;white-space:pre-wrap;color:#cbd5e1}
+</style></head><body><main>
+<h1>Pruebas del guardarraíl</h1>
+<p class="sub">python3 -m unittest discover -s seguridad/lab4/tests -v ·
+<span class="badge">Ran 18 tests · OK</span></p>
+<pre>test_el_dato_no_puede_cerrar_su_bloque (test_lab4.EntradaYSalida) ... ok
+test_la_pii_se_redacta (test_lab4.EntradaYSalida) ... ok
+test_la_salida_html_se_neutraliza (test_lab4.EntradaYSalida) ... ok
+test_guardado_minimiza_y_redacta (test_lab4.FugaDeDatos) ... ok
+test_vulnerable_expone_pii (test_lab4.FugaDeDatos) ... ok
+test_confirmacion_ejecuta_una_sola_vez (test_lab4.HumanInTheLoop) ... ok
+test_no_se_puede_confirmar_lo_ajeno (test_lab4.HumanInTheLoop) ... ok
+test_pendiente_no_ejecuta (test_lab4.HumanInTheLoop) ... ok
+test_admin_si_puede_pero_exige_confirmacion (test_lab4.InyeccionDirecta) ... ok
+test_guardado_bloquea_por_rol (test_lab4.InyeccionDirecta) ... ok
+test_vulnerable_ejecuta_el_borrado (test_lab4.InyeccionDirecta) ... ok
+test_el_intento_queda_en_la_bitacora (test_lab4.InyeccionIndirecta) ... ok
+test_guardado_trata_el_documento_como_dato (test_lab4.InyeccionIndirecta) ... ok
+test_vulnerable_obedece_al_documento (test_lab4.InyeccionIndirecta) ... ok
+test_herramienta_fuera_de_lista_blanca (test_lab4.PoliticaDeHerramientas) ... ok
+test_lectura_permitida (test_lab4.PoliticaDeHerramientas) ... ok
+test_limite_de_cantidad (test_lab4.PoliticaDeHerramientas) ... ok
+test_no_crea_prestamos_a_nombre_de_otro (test_lab4.PoliticaDeHerramientas) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.017s
+
+OK</pre></main></body></html>
