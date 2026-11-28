@@ -1,0 +1,23 @@
+test_el_dato_no_puede_cerrar_su_bloque (test_lab4.EntradaYSalida) ... ok
+test_la_pii_se_redacta (test_lab4.EntradaYSalida) ... ok
+test_la_salida_html_se_neutraliza (test_lab4.EntradaYSalida) ... ok
+test_guardado_minimiza_y_redacta (test_lab4.FugaDeDatos) ... ok
+test_vulnerable_expone_pii (test_lab4.FugaDeDatos) ... ok
+test_confirmacion_ejecuta_una_sola_vez (test_lab4.HumanInTheLoop) ... ok
+test_no_se_puede_confirmar_lo_ajeno (test_lab4.HumanInTheLoop) ... ok
+test_pendiente_no_ejecuta (test_lab4.HumanInTheLoop) ... ok
+test_admin_si_puede_pero_exige_confirmacion (test_lab4.InyeccionDirecta) ... ok
+test_guardado_bloquea_por_rol (test_lab4.InyeccionDirecta) ... ok
+test_vulnerable_ejecuta_el_borrado (test_lab4.InyeccionDirecta) ... ok
+test_el_intento_queda_en_la_bitacora (test_lab4.InyeccionIndirecta) ... ok
+test_guardado_trata_el_documento_como_dato (test_lab4.InyeccionIndirecta) ... ok
+test_vulnerable_obedece_al_documento (test_lab4.InyeccionIndirecta) ... ok
+test_herramienta_fuera_de_lista_blanca (test_lab4.PoliticaDeHerramientas) ... ok
+test_lectura_permitida (test_lab4.PoliticaDeHerramientas) ... ok
+test_limite_de_cantidad (test_lab4.PoliticaDeHerramientas) ... ok
+test_no_crea_prestamos_a_nombre_de_otro (test_lab4.PoliticaDeHerramientas) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.017s
+
+OK
